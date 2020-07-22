@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import models.bean.Palabra;
 import models.bean.Usuario;
 
 /**
@@ -21,7 +22,7 @@ import models.bean.Usuario;
  * @author flavi
  */
 @WebServlet(name = "HomeController", urlPatterns = {"/HomeController", "/inicio", "/registro", "/menu",
-    "/registrar", "/login", "/actualizar"
+    "/registrar", "/login", "/actualizar", "/palindromo"
 })
 public class HomeController extends HttpServlet {
 
@@ -134,7 +135,7 @@ public class HomeController extends HttpServlet {
                     break;
                 case "/actualizar":
                     Usuario usuarioActualizado = new Usuario();
-                    
+
                     usuarioSesion.setNombre(request.getParameter("nombre"));
                     usuarioSesion.setRfc(request.getParameter("rfc"));
                     usuarioSesion.setDireccion(request.getParameter("direccion"));
@@ -142,16 +143,43 @@ public class HomeController extends HttpServlet {
                     usuarioSesion.setWeb(request.getParameter("web"));
                     usuarioSesion.setPassword(request.getParameter("password"));
                     usuarioSesion.setCorreo(request.getParameter("correo"));
-                    
+
                     response.sendRedirect("menu");
-                    
-                    
-                    
-                    
+
                     break;
+                case "/palindromo":
+                    String palabras = request.getParameter("palabras");
+
+                    String[] words = palabras.split(" ");
+                    ArrayList<Palabra> pa = new ArrayList<>();
+                    Palabra p = new Palabra();
+                    String espalindromastr = null;
+                    boolean espalindroma = false;
+                    for (int i = 0; i < words.length; i++) {
+
+                        for (int x = 0, z = words[i].length() - 1; x <= z; x++, z--) {
+                            if (words[i].charAt(x) == words[i].charAt(z)) {
+                                espalindroma = true;
+                                espalindromastr = words[i].toString();
+                            }
+                        }
+                         Palabra paa = new  Palabra();
+                         paa.setPalabra(words[i]);
+                         pa.add(paa);
+                                 
+
+                        System.err.println("B- palabra " + words[i] + " es " + espalindroma);
+                    }
+                
+                    request.setAttribute("palabras", pa);
+                    request.getRequestDispatcher("WEB-INF/views/menu.jsp").forward(request, response);
+
+                    break;
+
             }
         } catch (Exception e) {
             System.err.println("ERROR EN EL METODO POST " + e.getMessage());
+            System.err.println("ERROR EN EL METODO POST " + e.getLocalizedMessage());
         }
     }
 
